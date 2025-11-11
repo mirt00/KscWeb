@@ -21,10 +21,11 @@ import AdminLogin from "../pages/AdminLogin";
 import Register from "../pages/Register";
 import ForgotPasswordPage from "../components/auth/ForgotPassword";
 import AdminDashboard from "../pages/AdminDashboard";
-import LogoUpload from "../components/admin/LogoUpload"; // ✅ Added
+import LogoUpload from "../components/admin/LogoUpload";
+import AdminContact from "../components/admin/AdminContact"; // ✅ Added
 
 // ===== Admin Layout =====
-import Sidebar from "../components/admin/Sidebar"; // ✅ Added
+import Sidebar from "../components/admin/Sidebar";
 
 // ===== Context =====
 import { AuthContext } from "../context/AuthContext";
@@ -94,13 +95,24 @@ const AppRouter = () => {
           }
         />
 
-        {/* ✅ Added: Logo Upload Page (Protected) */}
         <Route
           path="/admin/settings/logo-upload"
           element={
             <PrivateRoute>
               <AdminLayout>
                 <LogoUpload />
+              </AdminLayout>
+            </PrivateRoute>
+          }
+        />
+
+        {/* ✅ Added: Admin Contact Management */}
+        <Route
+          path="/admin/contact"
+          element={
+            <PrivateRoute>
+              <AdminLayout>
+                <AdminContact />
               </AdminLayout>
             </PrivateRoute>
           }

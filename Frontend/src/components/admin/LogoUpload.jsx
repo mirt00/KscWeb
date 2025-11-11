@@ -10,7 +10,7 @@ const LogoUpload = () => {
   const [isUploading, setIsUploading] = useState(false);
   const [existingLogo, setExistingLogo] = useState(null);
 
-  // ✅ Fetch the existing logo from backend
+  // Fetch the existing logo
   useEffect(() => {
     const fetchLogo = async () => {
       try {
@@ -26,20 +26,18 @@ const LogoUpload = () => {
     fetchLogo();
   }, []);
 
-  // ✅ Handle file selection and preview
   const handleFileChange = (e) => {
     const selectedFile = e.target.files[0];
     setFile(selectedFile);
     if (selectedFile) setPreview(URL.createObjectURL(selectedFile));
   };
 
-  // ✅ Upload logo to backend
   const handleUpload = async (e) => {
     e.preventDefault();
     if (!file) return setMessage("⚠️ Please select a file first!");
 
     const formData = new FormData();
-    formData.append("logo", file); // Must match backend multer field
+    formData.append("logo", file);
 
     try {
       setIsUploading(true);
@@ -54,7 +52,7 @@ const LogoUpload = () => {
       setMessage("✅ Logo uploaded successfully!");
       setExistingLogo(res.data);
       setFile(null);
-      setPreview(res.data.imageUrl); // update preview
+      setPreview(res.data.imageUrl);
     } catch (err) {
       console.error(err);
       setMessage("❌ Failed to upload logo.");
@@ -63,7 +61,6 @@ const LogoUpload = () => {
     }
   };
 
-  // ✅ Delete existing logo
   const handleDelete = async () => {
     if (!existingLogo?._id) return;
 
@@ -80,13 +77,13 @@ const LogoUpload = () => {
   };
 
   return (
-    <div className="flex justify-center items-center min-h-screen bg-gray-50 p-4">
-      <div className="bg-white shadow-xl rounded-2xl p-6 w-full max-w-lg">
-        <h2 className="text-2xl font-bold text-center mb-6 text-gray-800">
-          Manage Website Logo
-        </h2>
+    <div className="ml-72 mt-24 p-6 min-h-screen bg-gray-50">
+      <h2 className="text-3xl sm:text-4xl font-bold text-blue-700 mb-8 text-center">
+        Manage Website Logo
+      </h2>
 
-        <div className="flex flex-col items-center space-y-4">
+      <div className="bg-white rounded-3xl shadow-lg p-6 max-w-md mx-auto hover:shadow-xl transition">
+        <div className="flex flex-col items-center space-y-5">
           <div className="relative">
             {preview ? (
               <img
@@ -122,7 +119,7 @@ const LogoUpload = () => {
             <button
               type="submit"
               disabled={isUploading}
-              className={`w-full flex items-center justify-center gap-2 bg-gray-900 text-white py-2 rounded-lg hover:bg-gray-800 transition ${
+              className={`w-full flex items-center justify-center gap-2 bg-blue-600 text-white py-2 rounded-lg hover:bg-blue-700 transition ${
                 isUploading ? "opacity-70 cursor-not-allowed" : ""
               }`}
             >
@@ -131,9 +128,7 @@ const LogoUpload = () => {
             </button>
           </form>
 
-          {message && (
-            <p className="text-center text-sm mt-3 text-gray-700">{message}</p>
-          )}
+          {message && <p className="mt-3 text-center text-sm text-gray-700">{message}</p>}
         </div>
       </div>
     </div>

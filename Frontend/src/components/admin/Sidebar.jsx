@@ -57,11 +57,7 @@ const Sidebar = () => {
       name: "Home",
       icon: <FaHome />,
       submenu: [
-        {
-          name: "Upload Logo",
-          icon: <FaImages />,
-          path: "/admin/settings/logo-upload", // ✅ Correct path to match AppRouter
-        },
+        { name: "Upload Logo", icon: <FaImages />, path: "/admin/settings/logo-upload" },
       ],
     },
     { name: "About Us", icon: <FaInfoCircle />, path: "/admin/about" },
@@ -84,7 +80,10 @@ const Sidebar = () => {
       ],
     },
     { name: "Notices", icon: <FaBullhorn />, path: "/admin/notices" },
-    { name: "Contact Us", icon: <FaEnvelope />, path: "/admin/contact" },
+
+    // ✅ Admin Contact Page
+    { name: "Contact", icon: <FaEnvelope />, path: "/admin/contact" },
+
     {
       name: "Settings",
       icon: <FaCog />,
@@ -135,9 +134,9 @@ const Sidebar = () => {
 
       {/* ===== Sidebar ===== */}
       <aside
-        className={`fixed top-0 left-0 h-screen w-72 flex flex-col pt-24 transition-transform duration-300 z-40 shadow-xl
-          ${darkMode ? "bg-gray-900 text-white" : "bg-gray-50 text-gray-900"}
-          ${isSidebarOpen ? "translate-x-0" : "-translate-x-full"}`}
+        className={`fixed top-0 left-0 h-screen w-72 flex flex-col pt-24 transition-transform duration-300 z-40 shadow-xl ${
+          darkMode ? "bg-gray-900 text-white" : "bg-gray-50 text-gray-900"
+        } ${isSidebarOpen ? "translate-x-0" : "-translate-x-full"}`}
       >
         <nav className="flex flex-col flex-grow overflow-y-auto px-5 space-y-2">
           {menuItems.map((item, index) => (
@@ -171,7 +170,6 @@ const Sidebar = () => {
                     {openSubmenu === item.name ? <FaChevronUp /> : <FaChevronDown />}
                   </button>
 
-                  {/* Submenu */}
                   {openSubmenu === item.name && (
                     <div className="ml-6 mt-1 flex flex-col space-y-1">
                       {item.submenu.map((sub, idx) => (
