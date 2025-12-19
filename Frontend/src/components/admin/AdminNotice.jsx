@@ -8,7 +8,7 @@ export default function AdminNoticeList() {
   const [newFile, setNewFile] = useState(null);
   const [loading, setLoading] = useState(false);
 
-  const API = "http://localhost:5000/api/v1/notice";
+  const API = "http://localhost:5000/api/notice";
 
   // Allowed file types
   const allowedTypes = [
@@ -131,7 +131,7 @@ export default function AdminNoticeList() {
 
         <button
           type="submit"
-          className="bg-blue-600 hover:bg-blue-700 text-white font-bold px-3 py-1 rounded-2xl w-auto mx-auto text-sm"
+          className="bg-blue-600 hover:bg-blue-700 text-white font-bold px-3 py-1 rounded-2xl w-1/4  text-sm"
           disabled={loading}
         >
           {loading ? "Posting..." : "Post"}

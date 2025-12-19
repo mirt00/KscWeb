@@ -1,7 +1,8 @@
 import express from "express";
-import multer from "multer";
+import upload from "../middlewares/multer.js";
 import {
   getNotices,
+  getNoticeById,
   createNotice,
   updateNotice,
   deleteNotice,
@@ -9,14 +10,10 @@ import {
 
 const router = express.Router();
 
-// Multer memory storage (direct upload to Cloudinary)
-const storage = multer.memoryStorage();
-const upload = multer({ storage });
-
-// Routes
-router.get("/", getNotices);                        // Get all notices
-router.post("/", upload.single("file"), createNotice);  // Create notice
-router.put("/:id", upload.single("file"), updateNotice); // Update notice
-router.delete("/:id", deleteNotice);               // Delete notice
+router.get("/", getNotices);             // All notices
+router.get("/:id", getNoticeById);       // Single notice
+router.post("/", upload.single("file"), createNotice);
+router.put("/:id", upload.single("file"), updateNotice);
+router.delete("/:id", deleteNotice);
 
 export default router;

@@ -5,7 +5,7 @@ const StudentCard = ({ student }) => {
   return (
     <div className="bg-white rounded-2xl shadow-md hover:shadow-xl transition p-4 flex flex-col items-center text-center">
       <img
-        src={student.photo}
+        src={student.photoUrl}
         alt={student.name}
         className="w-32 h-32 object-cover rounded-full mb-4"
       />

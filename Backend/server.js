@@ -3,15 +3,16 @@ import dotenv from "dotenv";
 import cors from "cors";
 import connectDB from "./config/db.js";
 
-// Routes
+// ================= ROUTES =================
 import adminRoutes from "./routes/adminRoutes.js";
 import logoRoutes from "./routes/logoRoutes.js";
 import contactRoutes from "./routes/contactRoutes.js";
 import noticeRoutes from "./routes/noticeRoutes.js";
+import resultRoutes from "./routes/resultRoutes.js";
+import placementRoutes from "./routes/placementRoutes.js";
+import aboutRoutes from "./routes/aboutRoutes.js";
 
 dotenv.config();
-
-// ✅ Connect to MongoDB
 connectDB();
 
 const app = express();
@@ -20,25 +21,40 @@ const app = express();
 // Enable CORS for frontend
 app.use(cors({ origin: "http://localhost:5173" }));
 
-// Parse JSON and URL-encoded data
+// Parse JSON and URL-encoded bodies
 app.use(express.json());
 app.use(express.urlencoded({ extended: true }));
 
-// Serve uploaded files (if needed)
+// Serve static files
 app.use("/uploads", express.static("uploads"));
 
-// Trim trailing spaces/newlines from URLs
+// Trim trailing spaces in URLs
 app.use((req, res, next) => {
   req.url = req.url.trim();
   next();
 });
 
 // ================= API ROUTES =================
+// Admin routes
 app.use("/api/admin", adminRoutes);
+app.use("/api/admin/contact", contactRoutes);
+
+// About page routes
+app.use("/api/about", aboutRoutes);
+
+// Public routes
 app.use("/api/logo", logoRoutes);
 app.use("/api/contact", contactRoutes);
-app.use("/api/admin/contact", contactRoutes); // Admin-specific
-app.use("/api/v1/notice", noticeRoutes);        // Notices CRUD
+
+// Results
+app.use("/api/admin/result", resultRoutes); // Admin
+app.use("/api/result", resultRoutes);       // Public
+
+// Placements
+app.use("/api/admin/placement", placementRoutes);
+app.use("/api/placement", placementRoutes);
+
+app.use("/api/notice",noticeRoutes);
 
 // ================= HEALTH CHECK =================
 app.get("/", (req, res) => {
@@ -62,4 +78,4 @@ app.use((err, req, res, next) => {
 
 // ================= START SERVER =================
 const PORT = process.env.PORT || 5000;
-app.listen(PORT, () => console.log(`🚀 Server running on port ${PORT}`));
+app.listen(PORT, () => console.log(`Server running on port ${PORT} 🚀`));

@@ -27,12 +27,12 @@ const Sidebar = () => {
   const [isSidebarOpen, setIsSidebarOpen] = useState(true);
   const [darkMode, setDarkMode] = useState(true);
 
-  // Toggle Dark Mode
+  // ===== Dark Mode =====
   useEffect(() => {
     document.documentElement.classList.toggle("dark", darkMode);
   }, [darkMode]);
 
-  // Open sidebar on large screens
+  // ===== Responsive Sidebar =====
   useEffect(() => {
     const handleResize = () => setIsSidebarOpen(window.innerWidth >= 1024);
     handleResize();
@@ -53,7 +53,7 @@ const Sidebar = () => {
     navigate("/admin/login");
   };
 
-  // ===== Sidebar Menu Items =====
+  // ===== Menu Items =====
   const menuItems = [
     {
       name: "Home",
@@ -81,7 +81,6 @@ const Sidebar = () => {
         { name: "Placement", path: "/admin/placement" },
       ],
     },
-    // ✅ Admin Notice menu (fixed path)
     { name: "Notice", icon: <FaBullhorn />, path: "/admin/notices" },
     { name: "Contact", icon: <FaEnvelope />, path: "/admin/contact" },
     {
@@ -95,96 +94,95 @@ const Sidebar = () => {
 
   return (
     <>
-      {/* Top Nav */}
+      {/* ===== TOP BAR ===== */}
       <header
-        className={`fixed top-0 left-0 right-0 flex items-center justify-between px-6 py-4 shadow-md z-50 transition-all ${
-          darkMode ? "bg-gray-900 text-white" : "bg-white text-gray-900"
-        }`}
+        className={`fixed top-0 left-0 right-0 z-50 flex items-center justify-between px-6 py-4 shadow-md
+        ${darkMode ? "bg-gray-900 text-white" : "bg-white text-gray-900"}`}
       >
         <div className="flex items-center gap-4">
-          <h1 className="text-xl lg:text-2xl font-bold tracking-wide">Admin Dashboard</h1>
           <button
             onClick={() => setIsSidebarOpen((prev) => !prev)}
-            className="text-xl p-2 rounded-md"
-            title="Toggle Menu"
+            className="text-xl p-2 rounded-md hover:bg-gray-200 dark:hover:bg-gray-700"
           >
             <FaBars />
           </button>
+          <h1 className="text-xl font-bold hidden sm:block">Admin Dashboard</h1>
         </div>
 
-        {/* Dark/Light Mode */}
         <button
           onClick={() => setDarkMode((prev) => !prev)}
-          className="text-2xl p-2 rounded-full transition-all hover:bg-gray-200 dark:hover:bg-gray-700"
-          title={darkMode ? "Light Mode" : "Dark Mode"}
+          className="text-2xl p-2 rounded-full hover:bg-gray-200 dark:hover:bg-gray-700"
         >
           {darkMode ? <FaSun className="text-yellow-400" /> : <FaMoon />}
         </button>
       </header>
 
-      {/* Mobile Overlay */}
-      {isSidebarOpen && (
+      {/* ===== MOBILE OVERLAY ===== */}
+      {isSidebarOpen && window.innerWidth < 1024 && (
         <div
-          className="fixed inset-0 bg-black bg-opacity-40 z-30 lg:hidden"
+          className="fixed inset-0 bg-black bg-opacity-40 z-30"
           onClick={() => setIsSidebarOpen(false)}
         />
       )}
 
-      {/* Sidebar */}
+      {/* ===== SIDEBAR ===== */}
       <aside
-        className={`fixed top-0 left-0 h-screen w-72 pt-24 flex flex-col shadow-lg z-40 transition-transform duration-300 ${
-          isSidebarOpen ? "translate-x-0" : "-translate-x-full"
-        } ${darkMode ? "bg-gray-900 text-white" : "bg-gray-50 text-gray-900"}`}
+        className={`fixed top-0 left-0 h-screen pt-24 z-40 transition-all duration-300 shadow-lg
+        ${isSidebarOpen ? "w-72" : "w-20"}
+        ${darkMode ? "bg-gray-900 text-white" : "bg-gray-50 text-gray-900"}`}
       >
-        <nav className="px-5 flex flex-col gap-2 overflow-y-auto flex-grow">
+        <nav className="px-4 flex flex-col gap-2 overflow-y-auto h-full">
           {menuItems.map((item, index) => (
             <div key={index}>
-              {/* No Submenu */}
+              {/* ===== NO SUBMENU ===== */}
               {!item.submenu ? (
                 <button
                   onClick={() => navigateTo(item.path)}
-                  className={`w-full flex items-center gap-3 p-3 rounded-lg transition-all ${
-                    location.pathname === item.path
-                      ? "bg-blue-600 text-white"
-                      : "hover:bg-blue-500 hover:text-white"
-                  }`}
+                  className={`w-full flex items-center gap-3 p-3 rounded-lg transition-all
+                  ${location.pathname === item.path
+                    ? "bg-blue-600 text-white"
+                    : "hover:bg-blue-500 hover:text-white"}
+                  ${!isSidebarOpen && "justify-center"}`}
                 >
-                  <span className="text-lg">{item.icon}</span>
-                  {item.name}
+                  <span className="text-xl">{item.icon}</span>
+                  {isSidebarOpen && <span>{item.name}</span>}
                 </button>
               ) : (
                 <>
-                  {/* With Submenu */}
+                  {/* ===== SUBMENU BUTTON ===== */}
                   <button
                     onClick={() => toggleSubmenu(item.name)}
-                    className={`w-full flex items-center justify-between p-3 rounded-lg transition-all ${
-                      item.submenu.some((sub) => sub.path === location.pathname)
-                        ? "bg-blue-600 text-white"
-                        : "hover:bg-blue-500 hover:text-white"
-                    }`}
+                    className={`w-full flex items-center justify-between p-3 rounded-lg transition-all
+                    ${item.submenu.some((sub) => sub.path === location.pathname)
+                      ? "bg-blue-600 text-white"
+                      : "hover:bg-blue-500 hover:text-white"}`}
                   >
-                    <div className="flex items-center gap-3">
-                      <span className="text-lg">{item.icon}</span>
-                      {item.name}
+                    <div
+                      className={`flex items-center gap-3 ${
+                        !isSidebarOpen && "justify-center w-full"
+                      }`}
+                    >
+                      <span className="text-xl">{item.icon}</span>
+                      {isSidebarOpen && <span>{item.name}</span>}
                     </div>
-                    {openSubmenu === item.name ? <FaChevronUp /> : <FaChevronDown />}
+                    {isSidebarOpen &&
+                      (openSubmenu === item.name ? <FaChevronUp /> : <FaChevronDown />)}
                   </button>
 
-                  {/* Submenu List */}
-                  {openSubmenu === item.name && (
+                  {/* ===== SUBMENU ITEMS ===== */}
+                  {openSubmenu === item.name && isSidebarOpen && (
                     <div className="ml-6 mt-1 flex flex-col gap-1">
                       {item.submenu.map((sub, idx) => (
                         <button
                           key={idx}
                           onClick={() => navigateTo(sub.path)}
-                          className={`w-full flex items-center gap-2 p-2 rounded-md transition-all ${
-                            location.pathname === sub.path
-                              ? "bg-blue-400 text-white"
-                              : "hover:bg-blue-500 hover:text-white"
-                          }`}
+                          className={`w-full flex items-center gap-2 p-2 rounded-md transition-all
+                          ${location.pathname === sub.path
+                            ? "bg-blue-400 text-white"
+                            : "hover:bg-blue-500 hover:text-white"}`}
                         >
                           {sub.icon && <span>{sub.icon}</span>}
-                          {sub.name}
+                          <span>{sub.name}</span>
                         </button>
                       ))}
                     </div>
@@ -193,18 +191,19 @@ const Sidebar = () => {
               )}
             </div>
           ))}
-        </nav>
 
-        {/* Logout */}
-        <div className="p-6 border-t dark:border-gray-700">
-          <button
-            onClick={logout}
-            className="w-full bg-red-600 hover:bg-red-700 text-white flex items-center justify-center gap-3 py-3 rounded-lg"
-          >
-            <FaSignOutAlt />
-            Logout
-          </button>
-        </div>
+          {/* ===== LOGOUT ===== */}
+          <div className="mt-auto p-4 border-t dark:border-gray-700">
+            <button
+              onClick={logout}
+              className={`w-full bg-red-600 hover:bg-red-700 text-white flex items-center gap-3 py-3 rounded-lg
+              ${!isSidebarOpen && "justify-center"}`}
+            >
+              <FaSignOutAlt />
+              {isSidebarOpen && <span>Logout</span>}
+            </button>
+          </div>
+        </nav>
       </aside>
     </>
   );

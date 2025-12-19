@@ -31,7 +31,7 @@ const Navbar = () => {
   }, []);
 
   return (
-    <nav className="fixed w-full top-0 left-0 z-50 bg-white shadow-lg border-b">
+    <nav className="fixed w-full top-0 left-0 z-50 bg-[#3F1536] shadow-lg border-b">
       <div className="max-w-8xl mx-auto px-6 sm:px-8 lg:px-16">
         <div className="flex justify-between items-center h-20">
           {/* Logo / Campus Name */}
@@ -43,7 +43,7 @@ const Navbar = () => {
                 className="h-12 w-auto object-contain"
               />
             ) : (
-              <span className="text-2xl font-bold text-blue-700 hover:text-blue-800 transition">
+              <span className="text-2xl font-bold text-white hover:scale-110 transition">
                 Kathmandu Shiksha Campus
               </span>
             )}
@@ -56,10 +56,10 @@ const Navbar = () => {
                 key={path}
                 to={path}
                 className={({ isActive }) =>
-                  `relative font-medium text-[16px] transition-colors duration-200 ${
+                  `relative font-medium text-[18px] transition-colors duration-200 ${
                     isActive
-                      ? "text-blue-700 after:absolute after:left-0 after:bottom-0 after:h-[2px] after:w-full after:bg-blue-700"
-                      : "text-gray-700 hover:text-blue-600"
+                      ? "text-white hover:scale-110"
+                      : "text-gray-200 hover:text-white"
                   }`
                 }
               >
@@ -94,8 +94,8 @@ const Navbar = () => {
             className={({ isActive }) =>
               `block px-6 py-4 font-medium border-b border-gray-100 transition ${
                 isActive
-                  ? "text-blue-700 bg-blue-50"
-                  : "text-gray-700 hover:bg-gray-100"
+                  ? "text-white bg-blue-50"
+                  : "text-gray-200 hover:bg-gray-100"
               }`
             }
           >

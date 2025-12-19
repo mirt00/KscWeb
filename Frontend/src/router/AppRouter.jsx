@@ -7,7 +7,7 @@ import About from "../pages/About";
 import Academics from "../pages/Academics";
 import Admission from "../pages/Admission/Admission";
 import Contact from "../pages/Contact";
-import Notices from "../pages/Notices"; // public notice page
+import Notices from "../pages/Notices";
 import ResultPlacement from "../pages/StudentInfo/ResultPlacement";
 import FeeScholarships from "../pages/Admission/FeeScholarships";
 
@@ -18,7 +18,10 @@ import ForgotPasswordPage from "../components/auth/ForgotPassword";
 import AdminDashboard from "../pages/AdminDashboard";
 import LogoUpload from "../components/admin/LogoUpload";
 import AdminContact from "../components/admin/AdminContact";
-import AdminNotice from "../components/admin/AdminNotice"; // ✅ Admin Notice Management
+import AdminNotice from "../components/admin/AdminNotice";
+import AdminResult from "../components/admin/AdminResult";
+import AdminPlacement from "../components/admin/AdminPlacement";
+import AdminAbout from "../components/admin/AdminAbout";   // ✅ NEW IMPORT
 
 // ===== Admin Layout =====
 import Sidebar from "../components/admin/Sidebar";
@@ -52,22 +55,22 @@ const AdminLayout = ({ children }) => (
 const AppRouter = () => (
   <Router>
     <Routes>
-      {/* ===== 🌍 Public Routes ===== */}
+      {/* ===== Public Routes ===== */}
       <Route path="/" element={<Home />} />
       <Route path="/about" element={<About />} />
       <Route path="/academics" element={<Academics />} />
       <Route path="/admission" element={<Admission />} />
       <Route path="/contact" element={<Contact />} />
-      <Route path="/notices" element={<Notices />} /> {/* Public notices */}
+      <Route path="/notices" element={<Notices />} />
       <Route path="/results-placement" element={<ResultPlacement />} />
       <Route path="/fee-scholarships" element={<FeeScholarships />} />
 
-      {/* ===== 🔑 Admin Authentication Routes ===== */}
+      {/* ===== Admin Auth Routes ===== */}
       <Route path="/admin/login" element={<AdminLogin />} />
       <Route path="/admin/register" element={<Register />} />
       <Route path="/admin/forgot-password" element={<ForgotPasswordPage />} />
 
-      {/* ===== 🛡️ Protected Admin Routes ===== */}
+      {/* ===== Protected Admin Routes ===== */}
       <Route
         path="/admin/dashboard"
         element={
@@ -78,6 +81,19 @@ const AppRouter = () => (
           </PrivateRoute>
         }
       />
+
+      {/* ================= ABOUT PAGE ADDED HERE ================= */}
+      <Route
+        path="/admin/about"
+        element={
+          <PrivateRoute>
+            <AdminLayout>
+              <AdminAbout />
+            </AdminLayout>
+          </PrivateRoute>
+        }
+      />
+      {/* ========================================================== */}
 
       <Route
         path="/admin/settings/logo-upload"
@@ -101,7 +117,6 @@ const AppRouter = () => (
         }
       />
 
-      {/* ✅ Admin Notice Management */}
       <Route
         path="/admin/notices"
         element={
@@ -113,7 +128,30 @@ const AppRouter = () => (
         }
       />
 
-      {/* ===== 🚧 Catch-All Route ===== */}
+      {/* Admin Result & Placement */}
+      <Route
+        path="/admin/result"
+        element={
+          <PrivateRoute>
+            <AdminLayout>
+              <AdminResult />
+            </AdminLayout>
+          </PrivateRoute>
+        }
+      />
+
+      <Route
+        path="/admin/placement"
+        element={
+          <PrivateRoute>
+            <AdminLayout>
+              <AdminPlacement />
+            </AdminLayout>
+          </PrivateRoute>
+        }
+      />
+
+      {/* ===== Catch-All Route ===== */}
       <Route path="*" element={<Navigate to="/" replace />} />
     </Routes>
   </Router>

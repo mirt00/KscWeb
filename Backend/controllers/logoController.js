@@ -1,7 +1,7 @@
 import Logo from "../models/Logo.js";
 import cloudinary from "../config/cloudinary.js";
 
-// Upload logo
+// ================= UPLOAD LOGO =================
 export const uploadLogo = async (req, res) => {
   try {
     if (!req.file) {
@@ -13,7 +13,7 @@ export const uploadLogo = async (req, res) => {
       resource_type: "image",
     });
 
-    // deactivate previous logos
+    // Deactivate previous logos
     await Logo.updateMany({}, { $set: { isActive: false } });
 
     const logo = await Logo.create({
@@ -25,39 +25,38 @@ export const uploadLogo = async (req, res) => {
     res.status(201).json(logo);
   } catch (error) {
     console.error("Error uploading logo:", error);
-    res.status(500).json({ message: "Server error", error });
+    res.status(500).json({ message: "Server error", error: error.message });
   }
 };
 
-// Get active logo
+// ================= GET ACTIVE LOGO =================
 export const getActiveLogo = async (req, res) => {
   try {
     const logo = await Logo.findOne({ isActive: true });
     if (!logo) return res.status(404).json({ message: "No active logo found" });
     res.status(200).json(logo);
   } catch (error) {
-    console.error(error);
-    res.status(500).json({ message: "Server error" });
+    console.error("Error fetching logo:", error);
+    res.status(500).json({ message: "Server error", error: error.message });
   }
 };
 
-// Delete logo
+// ================= DELETE LOGO =================
 export const deleteLogo = async (req, res) => {
   try {
     const { id } = req.params;
-
     const logo = await Logo.findById(id);
     if (!logo) return res.status(404).json({ message: "Logo not found" });
 
-    // delete from Cloudinary
+    // Delete from Cloudinary
     await cloudinary.uploader.destroy(logo.publicId);
 
-    // delete from MongoDB
+    // Delete from MongoDB
     await logo.deleteOne();
 
     res.status(200).json({ message: "Logo deleted successfully" });
   } catch (error) {
     console.error("Error deleting logo:", error);
-    res.status(500).json({ message: "Server error" });
+    res.status(500).json({ message: "Server error", error: error.message });
   }
 };

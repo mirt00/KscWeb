@@ -50,7 +50,7 @@ const Contact = () => {
           </div>
 
           {/* Contact + Map */}
-          <div className="grid grid-cols-1 lg:grid-cols-2 gap-10 items-start">
+          <div className="grid grid-cols-1 gap-10 items-start">
             {/* Contact Card */}
             <div className="bg-white rounded-3xl shadow-xl p-10 flex flex-col justify-center hover:shadow-2xl transition-all">
               <h2 className="text-2xl sm:text-3xl font-semibold text-blue-700 mb-6">

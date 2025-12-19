@@ -1,41 +1,52 @@
-// src/pages/Result.jsx
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
+import axios from "axios";
 import Header from "../../components/common/Header";
+
+const API = "http://localhost:5000/api/result"; // Fixed API endpoint (matches backend route)
 
 const Result = () => {
   const [grade, setGrade] = useState("All");
   const [stream, setStream] = useState("All");
   const [year, setYear] = useState("All");
+  const [results, setResults] = useState([]);
+  const [loading, setLoading] = useState(true);
+  const [error, setError] = useState(""); // added error state
 
-  // Dummy data (replace with backend later)
-  const results = [
-    {
-      title: "Grade XI Education Result 2024",
-      grade: "XI",
-      stream: "Education",
-      year: "2024",
-      fileType: "image",
-      url: "https://via.placeholder.com/600x400?text=XI+Education+2024",
-    },
-    {
-      title: "Grade XII Management Result 2024",
-      grade: "XII",
-      stream: "Management",
-      year: "2024",
-      fileType: "image",
-      url: "https://via.placeholder.com/600x400?text=XII+Management+2024",
-    },
-    {
-      title: "Grade XI Management Result 2023",
-      grade: "XI",
-      stream: "Management",
-      year: "2023",
-      fileType: "image",
-      url: "https://via.placeholder.com/600x400?text=XI+Management+2023",
-    },
-  ];
+  // Fetch results from backend
+  const fetchResults = async () => {
+    setLoading(true);
+    setError("");
+    try {
+      const res = await axios.get(API);
 
-  // Filter Logic
+      if (!res.data.success) {
+        throw new Error(res.data.message || "Failed to fetch results");
+      }
+console.log("THe data",res.data.data)
+      // Safely map backend data
+      const data = (res.data?.data|| []).map((item) => ({
+        title: item.title || "Untitled",
+        grade: item.faculty === "Education" ? "XI" : "XII", // adjust mapping if needed
+        stream: item.faculty || "N/A",
+        year: item.year || "N/A",
+        // fileType: item.imageUrl?.endsWith(".pdf") ? "pdf" : "image",
+        url: item.resultImage.url || "https://via.placeholder.com/400x300", // fallback
+      }));
+
+      setResults(data);
+    } catch (err) {
+      console.error("Error fetching results:", err);
+      setError(err.message || "Something went wrong while fetching results");
+    } finally {
+      setLoading(false);
+    }
+  };
+
+  useEffect(() => {
+    fetchResults();
+  }, []);
+
+  // Filter results
   const filteredResults = results.filter((res) => {
     return (
       (grade === "All" || res.grade === grade) &&
@@ -53,10 +64,9 @@ const Result = () => {
             Examination Results
           </h1>
 
-          {/* === Filter Section === */}
+          {/* Filter Section */}
           <div className="bg-white shadow-lg rounded-2xl p-6 mb-10">
             <div className="grid grid-cols-1 md:grid-cols-4 gap-4">
-              {/* Grade */}
               <select
                 value={grade}
                 onChange={(e) => setGrade(e.target.value)}
@@ -67,7 +77,6 @@ const Result = () => {
                 <option value="XII">Grade XII</option>
               </select>
 
-              {/* Stream */}
               <select
                 value={stream}
                 onChange={(e) => setStream(e.target.value)}
@@ -78,7 +87,6 @@ const Result = () => {
                 <option value="Management">Management</option>
               </select>
 
-              {/* Year */}
               <select
                 value={year}
                 onChange={(e) => setYear(e.target.value)}
@@ -90,9 +98,8 @@ const Result = () => {
                 <option value="2023">2023</option>
               </select>
 
-              {/* Search Button */}
               <button
-                onClick={() => {}}
+                onClick={fetchResults}
                 className="bg-blue-600 text-white font-semibold py-2 rounded-lg hover:bg-blue-700 transition duration-200"
               >
                 Search
@@ -100,43 +107,43 @@ const Result = () => {
             </div>
           </div>
 
-          {/* === Results Grid === */}
-          {filteredResults.length > 0 ? (
+          {/* Results Grid */}
+          {loading ? (
+            <p className="text-center text-gray-500 animate-pulse mt-10">
+              Loading results...
+            </p>
+          ) : error ? (
+            <p className="text-center text-red-500 mt-10">{error}</p>
+          ) : filteredResults.length === 0 ? (
+            <p className="text-center text-gray-600 mt-10">
+              No results found. Please adjust your filters.
+            </p>
+          ) : (
             <div className="grid sm:grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
               {filteredResults.map((res, idx) => (
                 <div
                   key={idx}
                   className="bg-white rounded-2xl shadow-md hover:shadow-xl overflow-hidden transform hover:-translate-y-1 transition duration-300"
                 >
-                  {res.fileType === "image" ? (
-                    <img
+                <img
                       src={res.url}
                       alt={res.title}
                       className="w-full h-56 object-cover"
                     />
-                  ) : (
-                    <iframe
-                      src={res.url}
-                      className="w-full h-56"
-                      title={res.title}
-                    />
-                  )}
+                    
+                   
+                
                   <div className="p-4 text-center">
                     <h3 className="text-lg font-semibold text-gray-800 mb-2">
                       {res.title}
                     </h3>
                     <p className="text-sm text-gray-600">
-                      Grade: {res.grade} | Stream: {res.stream} | Year:{" "}
-                      {res.year}
+                      Grade: {res.grade} | Stream: {res.stream} | Year: {res.year}
                     </p>
                   </div>
                 </div>
               ))}
             </div>
-          ) : (
-            <p className="text-center text-gray-600 mt-10">
-              No results found. Please adjust your filters.
-            </p>
           )}
         </section>
       </main>
