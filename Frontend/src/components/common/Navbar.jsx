@@ -1,107 +1,116 @@
-// src/components/Navbar.jsx
-import React, { useState, useRef, useContext } from "react";
-import { Link, NavLink } from "react-router-dom";
-import { Menu, X } from "lucide-react";
-import { LogoContext } from "../../context/LogoContext";
+import React, { useState, useEffect } from "react";
+import { Menu, X, ChevronDown } from "lucide-react";
 
 const Navbar = () => {
-  const [isOpen, setIsOpen] = useState(false);
-  const menuRef = useRef();
-  const { logo } = useContext(LogoContext);
+  const [isScrolled, setIsScrolled] = useState(false);
+  const [isMobileMenuOpen, setIsMobileMenuOpen] = useState(false);
 
-  const navLinks = [
-    { path: "/", label: "Home" },
-    { path: "/about", label: "About Us" },
-    { path: "/academics", label: "Academics" },
-    { path: "/admission", label: "Admission" },
-    { path: "/results-placement", label: "Results & Placement" },
-    { path: "/notices", label: "Notices" },
-    { path: "/contact", label: "Contact Us" },
-  ];
-
-  // Close mobile menu when clicking outside
-  React.useEffect(() => {
-    const handleClickOutside = (e) => {
-      if (menuRef.current && !menuRef.current.contains(e.target)) {
-        setIsOpen(false);
-      }
-    };
-    document.addEventListener("mousedown", handleClickOutside);
-    return () => document.removeEventListener("mousedown", handleClickOutside);
+  // Monitors scroll position to trigger the glass effect
+  useEffect(() => {
+    const handleScroll = () => setIsScrolled(window.scrollY > 20);
+    window.addEventListener("scroll", handleScroll);
+    return () => window.removeEventListener("scroll", handleScroll);
   }, []);
 
-  return (
-    <nav className="fixed w-full top-0 left-0 z-50 bg-[#3F1536] shadow-lg border-b">
-      <div className="max-w-8xl mx-auto px-6 sm:px-8 lg:px-16">
-        <div className="flex justify-between items-center h-20">
-          {/* Logo / Campus Name */}
-          <Link to="/" className="flex items-center space-x-3">
-            {logo ? (
-              <img
-                src={logo}
-                alt="Logo"
-                className="h-12 w-auto object-contain"
-              />
-            ) : (
-              <span className="text-2xl font-bold text-white hover:scale-110 transition">
-                Kathmandu Shiksha Campus
-              </span>
-            )}
-          </Link>
+  const navLinks = [
+    { name: "Home", href: "/" },
+    { name: "About", href: "/about" },
+    { name: "Academics", href: "/academics" },
+    { name: "Admission", href: "/admission" },
+    { name: "Notices", href: "/notices" },
+    { name: "Contact", href: "/contact" },
+  ];
 
-          {/* Desktop Navigation */}
-          <div className="hidden md:flex space-x-10 items-center">
-            {navLinks.map(({ path, label }) => (
-              <NavLink
-                key={path}
-                to={path}
-                className={({ isActive }) =>
-                  `relative font-medium text-[18px] transition-colors duration-200 ${
-                    isActive
-                      ? "text-white hover:scale-110"
-                      : "text-gray-200 hover:text-white"
-                  }`
-                }
+  return (
+    <nav
+      className={`fixed w-full top-0 left-0 z-[100] transition-all duration-500 ease-in-out ${
+        isScrolled 
+          ? "bg-[#3F1536]/90 backdrop-blur-md py-3 shadow-2xl" 
+          : "bg-[#3F1536] py-6"
+      }`}
+    >
+      <div className="max-w-7xl mx-auto px-6 md:px-10">
+        <div className="flex justify-between items-center">
+          
+          {/* --- LOGO SECTION --- */}
+          <a href="/" className="flex items-center gap-4 group">
+            <div className="relative">
+              {/* Gold Square Icon */}
+              <div className="h-11 w-11 bg-[#C8A45D] rounded-br-2xl flex items-center justify-center transform group-hover:rotate-6 transition-transform duration-300 shadow-lg">
+                <span className="text-white font-serif text-2xl font-black italic">K</span>
+              </div>
+              {/* Soft Glow behind icon */}
+              <div className="absolute inset-0 bg-[#C8A45D] blur-xl opacity-20 group-hover:opacity-40 transition-opacity"></div>
+            </div>
+            
+            <div className="flex flex-col border-l border-white/20 pl-4">
+              <span className="text-white font-black tracking-[0.15em] leading-none text-xl sm:text-2xl">
+                KATHMANDU
+              </span>
+              <span className="text-[#C8A45D] text-[9px] font-bold tracking-[0.4em] mt-1 uppercase">
+                Shiksha Campus
+              </span>
+            </div>
+          </a>
+
+          {/* --- DESKTOP MENU --- */}
+          <div className="hidden lg:flex items-center gap-2">
+            {navLinks.map((link) => (
+              <a
+                key={link.name}
+                href={link.href}
+                className="px-4 py-2 text-white/70 hover:text-[#C8A45D] text-xs font-bold uppercase tracking-[0.2em] transition-all duration-300 relative group"
               >
-                {label}
-              </NavLink>
+                {link.name}
+                {/* Hover Underline Animation */}
+                <span className="absolute bottom-0 left-4 right-4 h-[1px] bg-[#C8A45D] transform scale-x-0 group-hover:scale-x-100 transition-transform duration-300 origin-left"></span>
+              </a>
             ))}
+
+            {/* Premium CTA Button */}
+            <a
+              href="/admission"
+              className="ml-6 px-8 py-3 bg-[#C8A45D] text-white text-[10px] font-black uppercase tracking-[0.2em] rounded-sm hover:bg-[#b39250] transition-all shadow-[0_10px_20px_rgba(200,164,93,0.2)] active:scale-95"
+            >
+              Apply Now
+            </a>
           </div>
 
-          {/* Mobile Menu Button */}
-          <button
-            onClick={() => setIsOpen(!isOpen)}
-            className="md:hidden text-gray-700 focus:outline-none p-2 rounded-md hover:bg-gray-100 transition"
-            aria-label="Toggle menu"
+          {/* --- MOBILE TOGGLE --- */}
+          <button 
+            className="lg:hidden p-2 text-white/80 hover:text-white transition-colors"
+            onClick={() => setIsMobileMenuOpen(!isMobileMenuOpen)}
           >
-            {isOpen ? <X size={28} /> : <Menu size={28} />}
+            {isMobileMenuOpen ? <X size={28} /> : <Menu size={28} />}
           </button>
         </div>
       </div>
 
-      {/* Mobile Dropdown Menu */}
-      <div
-        ref={menuRef}
-        className={`md:hidden bg-white border-t shadow-md transition-all duration-300 overflow-hidden ${
-          isOpen ? "max-h-screen" : "max-h-0"
+      {/* --- MOBILE OVERLAY --- */}
+      <div 
+        className={`lg:hidden fixed inset-0 top-[72px] bg-[#3F1536] transition-transform duration-500 ease-in-out ${
+          isMobileMenuOpen ? "translate-x-0" : "translate-x-full"
         }`}
       >
-        {navLinks.map(({ path, label }) => (
-          <NavLink
-            key={path}
-            to={path}
-            onClick={() => setIsOpen(false)}
-            className={({ isActive }) =>
-              `block px-6 py-4 font-medium border-b border-gray-100 transition ${
-                isActive
-                  ? "text-white bg-blue-50"
-                  : "text-gray-200 hover:bg-gray-100"
-              }`
-            }
+        <div className="flex flex-col p-8 gap-6">
+          {navLinks.map((link) => (
+            <a
+              key={link.name}
+              href={link.href}
+              onClick={() => setIsMobileMenuOpen(false)}
+              className="text-white/90 text-2xl font-black tracking-tighter border-b border-white/10 pb-4 flex justify-between items-center group"
+            >
+              {link.name}
+              <ChevronDown className="-rotate-90 text-[#C8A45D] opacity-0 group-hover:opacity-100 transition-all" size={20} />
+            </a>
+          ))}
+          <a
+            href="/admission"
+            className="mt-4 w-full bg-[#C8A45D] text-white py-5 text-center font-black uppercase tracking-widest text-xs rounded-xl"
           >
-            {label}
-          </NavLink>
-        ))}
+            Start Admission
+          </a>
+        </div>
       </div>
     </nav>
   );

@@ -6,9 +6,8 @@ const storage = new CloudinaryStorage({
   cloudinary,
   params: {
     folder: "notices",
-    resource_type: "raw", // raw allows any file type
-    use_filename: true,
-    unique_filename: true,
+    resource_type: "auto", // <--- CRITICAL: Detects if it's an image/pdf automatically
+    allowed_formats: ["jpg", "png", "jpeg", "pdf"], 
   },
 });
 

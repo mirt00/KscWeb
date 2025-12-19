@@ -29,21 +29,27 @@ export const getNoticeById = async (req, res) => {
 export const createNotice = async (req, res) => {
   try {
     const { title } = req.body;
-    if (!title) return res.status(400).json({ success: false, message: "Title is required" });
-
-    let fileUrl = null;
-    let fileName = null;
-    if (req.file) {
-      const result = await uploadToCloudinary(req.file.buffer, req.file.originalname);
-      fileUrl = result.secure_url;
-      fileName = req.file.originalname;
+    
+    if (!title) {
+      return res.status(400).json({ success: false, message: "Title is required" });
     }
 
-    const notice = await Notice.create({ title, fileUrl, fileName });
-    res.status(201).json({ success: true, message: "Notice created", notice });
+    // When using CloudinaryStorage middleware, req.file is already populated 
+    // with the Cloudinary response details.
+    if (!req.file) {
+      return res.status(400).json({ success: false, message: "No file uploaded" });
+    }
+
+    const notice = await Notice.create({
+      title,
+      fileUrl: req.file.path,        // This is the secure URL with extension
+      fileName: req.file.originalname // The original name of the file
+    });
+
+    res.status(201).json({ success: true, notice });
   } catch (err) {
-    console.error("CREATE Notice Error:", err);
-    res.status(500).json({ success: false, message: "Failed to create notice" });
+    console.error(err);
+    res.status(500).json({ success: false, message: "Upload failed" });
   }
 };
 

@@ -8,8 +8,8 @@ const Footer = () => {
       <div className="container mx-auto flex flex-col md:flex-row justify-between items-center">
         {/* Marquee Text */}
         <div className="w-full overflow-hidden whitespace-nowrap mb-4 md:mb-0">
-          <p className="inline-block animate-marquee">
-            &copy; 2025 Kathmandu Shiksha Campus. All rights reserved. Designed by Ronak Thapa Magar. Developed by Amrit B.C.
+          <p className="">
+            &copy;2025 Kathmandu Shiksha Campus. All rights reserved.
           </p>
         </div>
 
