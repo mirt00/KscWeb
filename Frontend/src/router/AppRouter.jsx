@@ -3,7 +3,6 @@ import { BrowserRouter as Router, Routes, Route, Navigate } from "react-router-d
 
 // ===== Public Pages =====
 import Home from "../pages/Home";
-import About from "../pages/About";
 import Academics from "../pages/Academics";
 import Admission from "../pages/Admission/Admission";
 import Contact from "../pages/Contact";
@@ -28,6 +27,7 @@ import Sidebar from "../components/admin/Sidebar";
 
 // ===== Context =====
 import { AuthContext } from "../context/AuthContext";
+import About from "../pages/about/About";
 
 // ==================== PRIVATE ROUTE ====================
 const PrivateRoute = ({ children }) => {
