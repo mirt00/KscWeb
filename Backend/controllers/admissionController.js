@@ -1,8 +1,28 @@
-import AdmissionApplication from "../models/AdmissionApplication.js";
+// controllers/admissionController.js
+import mongoose from "mongoose";
+import AdmissionApplication from "../models/StudentAdmi.js";
 import cloudinary from "../config/cloudinary.js";
 import streamifier from "streamifier";
 
+/* =====================================================
+   CLOUDINARY UPLOAD HELPER
+===================================================== */
+const uploadToCloudinary = (fileBuffer, folder) => {
+  return new Promise((resolve, reject) => {
+    const stream = cloudinary.uploader.upload_stream(
+      { folder },
+      (error, result) => {
+        if (result) resolve(result.secure_url);
+        else reject(error);
+      }
+    );
+    streamifier.createReadStream(fileBuffer).pipe(stream);
+  });
+};
 
+/* =====================================================
+   CREATE ADMISSION APPLICATION (STUDENT)
+===================================================== */
 export const createAdmission = async (req, res) => {
   try {
     const {
@@ -13,31 +33,35 @@ export const createAdmission = async (req, res) => {
       guardianInfo,
     } = req.body;
 
-    // Upload files if present
     const documents = {};
-    if (req.files?.seeMarksheet)
+
+    if (req.files?.seeMarksheet) {
       documents.seeMarksheet = await uploadToCloudinary(
         req.files.seeMarksheet[0].buffer,
         "admission/marksheets"
       );
+    }
 
-    if (req.files?.characterCertificate)
+    if (req.files?.characterCertificate) {
       documents.characterCertificate = await uploadToCloudinary(
         req.files.characterCertificate[0].buffer,
         "admission/character"
       );
+    }
 
-    if (req.files?.birthOrCitizenship)
+    if (req.files?.birthOrCitizenship) {
       documents.birthOrCitizenship = await uploadToCloudinary(
         req.files.birthOrCitizenship[0].buffer,
         "admission/citizenship"
       );
+    }
 
-    if (req.files?.transferCertificate)
+    if (req.files?.transferCertificate) {
       documents.transferCertificate = await uploadToCloudinary(
         req.files.transferCertificate[0].buffer,
         "admission/transfer"
       );
+    }
 
     if (req.files?.passportPhotos) {
       documents.passportPhotos = await Promise.all(
@@ -47,21 +71,17 @@ export const createAdmission = async (req, res) => {
       );
     }
 
-    // Student Signature (required)
-    let signatureUrl = null;
-    if (req.files?.studentSignature) {
-      signatureUrl = await uploadToCloudinary(
-        req.files.studentSignature[0].buffer,
-        "admission/signature"
-      );
-    }
-
-    if (!signatureUrl) {
+    if (!req.files?.studentSignature) {
       return res.status(400).json({
         success: false,
         message: "Student signature is required",
       });
     }
+
+    const signatureUrl = await uploadToCloudinary(
+      req.files.studentSignature[0].buffer,
+      "admission/signature"
+    );
 
     const application = await AdmissionApplication.create({
       studentInfo,
@@ -70,9 +90,7 @@ export const createAdmission = async (req, res) => {
       streamInfo,
       guardianInfo,
       documents,
-      declaration: {
-        studentSignature: signatureUrl,
-      },
+      declaration: { studentSignature: signatureUrl },
     });
 
     res.status(201).json({
@@ -104,19 +122,31 @@ export const getAllAdmissions = async (req, res) => {
       data: applications,
     });
   } catch (error) {
+    console.error("GET ALL ADMISSIONS ERROR:", error);
     res.status(500).json({
       success: false,
       message: "Failed to fetch applications",
+      error: error.message,
     });
   }
 };
 
 /* =====================================================
-   GET SINGLE APPLICATION
+   GET SINGLE APPLICATION BY ID (ADMIN)
 ===================================================== */
 export const getAdmissionById = async (req, res) => {
   try {
-    const application = await AdmissionApplication.findById(req.params.id);
+    const id = req.params.id.trim();
+
+    if (!mongoose.Types.ObjectId.isValid(id)) {
+      return res.status(400).json({
+        success: false,
+        message: "Invalid application ID format",
+      });
+    }
+
+    const application = await AdmissionApplication.findById(id);
+
     if (!application) {
       return res.status(404).json({
         success: false,
@@ -129,9 +159,11 @@ export const getAdmissionById = async (req, res) => {
       data: application,
     });
   } catch (error) {
+    console.error("GET ADMISSION BY ID ERROR:", error);
     res.status(500).json({
       success: false,
       message: "Failed to fetch application",
+      error: error.message,
     });
   }
 };
@@ -141,9 +173,18 @@ export const getAdmissionById = async (req, res) => {
 ===================================================== */
 export const updateAdmissionStatus = async (req, res) => {
   try {
+    const id = req.params.id.trim();
     const { status } = req.body;
 
-    if (!["Pending", "Reviewed", "Approved", "Rejected"].includes(status)) {
+    if (!mongoose.Types.ObjectId.isValid(id)) {
+      return res.status(400).json({
+        success: false,
+        message: "Invalid application ID",
+      });
+    }
+
+    const allowedStatuses = ["Pending", "Reviewed", "Approved", "Rejected"];
+    if (!allowedStatuses.includes(status)) {
       return res.status(400).json({
         success: false,
         message: "Invalid status value",
@@ -151,7 +192,7 @@ export const updateAdmissionStatus = async (req, res) => {
     }
 
     const application = await AdmissionApplication.findByIdAndUpdate(
-      req.params.id,
+      id,
       { status },
       { new: true }
     );
@@ -165,13 +206,15 @@ export const updateAdmissionStatus = async (req, res) => {
 
     res.status(200).json({
       success: true,
-      message: "Application status updated",
+      message: "Application status updated successfully",
       data: application,
     });
   } catch (error) {
+    console.error("UPDATE STATUS ERROR:", error);
     res.status(500).json({
       success: false,
       message: "Failed to update status",
+      error: error.message,
     });
   }
 };
@@ -181,7 +224,17 @@ export const updateAdmissionStatus = async (req, res) => {
 ===================================================== */
 export const deleteAdmission = async (req, res) => {
   try {
-    const application = await AdmissionApplication.findByIdAndDelete(req.params.id);
+    const id = req.params.id.trim();
+
+    if (!mongoose.Types.ObjectId.isValid(id)) {
+      return res.status(400).json({
+        success: false,
+        message: "Invalid application ID",
+      });
+    }
+
+    const application = await AdmissionApplication.findByIdAndDelete(id);
+
     if (!application) {
       return res.status(404).json({
         success: false,
@@ -194,9 +247,11 @@ export const deleteAdmission = async (req, res) => {
       message: "Application deleted successfully",
     });
   } catch (error) {
+    console.error("DELETE ADMISSION ERROR:", error);
     res.status(500).json({
       success: false,
       message: "Failed to delete application",
+      error: error.message,
     });
   }
 };

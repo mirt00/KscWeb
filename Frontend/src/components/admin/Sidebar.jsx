@@ -68,7 +68,7 @@ const Sidebar = () => {
       name: "Admission",
       icon: <FaUserGraduate />,
       submenu: [
-        { name: "Admission", path: "/admin/admission" },
+        // { name: "Admission", path: "/admin/admission" },
         { name: "Fee & Scholarship", path: "/admin/admission/fee-scholarship" },
         { name: "Registration Handle", path: "/admin/admission/registration" },
       ],

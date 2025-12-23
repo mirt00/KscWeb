@@ -27,9 +27,7 @@ const AdmissionApplicationSchema = new mongoose.Schema(
       religion: {
         type: String,
       },
-      casteEthnicity: {
-        type: String,
-      },
+  
     },
 
     // ======================
@@ -46,6 +44,8 @@ const AdmissionApplicationSchema = new mongoose.Schema(
       mobileNumber: {
         type: String,
         required: true,
+        minlength: 10,
+        maxlength: 10,
       },
       email: {
         type: String,
@@ -87,12 +87,10 @@ const AdmissionApplicationSchema = new mongoose.Schema(
     streamInfo: {
       stream: {
         type: String,
-        enum: ["Science", "Management", "Humanities", "Education"],
+        enum: ["Management", "Education"],
         required: true,
       },
-      optionalSubjects: {
-        type: String,
-      },
+      
     },
 
     // ======================
@@ -125,19 +123,24 @@ const AdmissionApplicationSchema = new mongoose.Schema(
     documents: {
       seeMarksheet: {
         type: String, // Cloudinary / S3 URL
+        required: true,
       },
       characterCertificate: {
         type: String,
+        required: false,
       },
       birthOrCitizenship: {
         type: String,
+        required: true,
       },
       transferCertificate: {
         type: String,
+        required: false,
       },
       passportPhotos: [
         {
           type: String,
+          required: true,
         },
       ],
     },

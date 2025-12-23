@@ -20,7 +20,8 @@ import AdminContact from "../components/admin/AdminContact";
 import AdminNotice from "../components/admin/AdminNotice";
 import AdminResult from "../components/admin/AdminResult";
 import AdminPlacement from "../components/admin/AdminPlacement";
-import AdminAbout from "../components/admin/AdminAbout";   // ✅ NEW IMPORT
+import AdminAbout from "../components/admin/AdminAbout"; // ✅ NEW IMPORT
+import AdmissionAdmin from "../components/admin/admissionAdmin";
 
 // ===== Admin Layout =====
 import Sidebar from "../components/admin/Sidebar";
@@ -31,130 +32,141 @@ import About from "../pages/about/About";
 
 // ==================== PRIVATE ROUTE ====================
 const PrivateRoute = ({ children }) => {
-  const { adminInfo, loading } = useContext(AuthContext);
+    const { adminInfo, loading } = useContext(AuthContext);
 
-  if (loading)
-    return (
-      <div className="text-center mt-20 text-gray-600 animate-pulse">
-        Checking authentication...
-      </div>
-    );
+    if (loading)
+        return (
+            <div className="text-center mt-20 text-gray-600 animate-pulse">
+                Checking authentication...
+            </div>
+        );
 
-  return adminInfo ? children : <Navigate to="/admin/login" replace />;
+    return adminInfo ? children : <Navigate to="/admin/login" replace />;
 };
 
 // ==================== ADMIN LAYOUT ====================
 const AdminLayout = ({ children }) => (
-  <div className="flex min-h-screen bg-gray-100">
-    <Sidebar />
-    <main className="flex-1 p-4">{children}</main>
-  </div>
+    <div className="flex min-h-screen bg-gray-100">
+        <Sidebar />
+        <main className="flex-1 p-4">{children}</main>
+    </div>
 );
 
 // ==================== ROUTES ====================
 const AppRouter = () => (
-  <Router>
-    <Routes>
-      {/* ===== Public Routes ===== */}
-      <Route path="/" element={<Home />} />
-      <Route path="/about" element={<About />} />
-      <Route path="/academics" element={<Academics />} />
-      <Route path="/admission" element={<Admission />} />
-      <Route path="/contact" element={<Contact />} />
-      <Route path="/notices" element={<Notices />} />
-      <Route path="/results-placement" element={<ResultPlacement />} />
-      <Route path="/fee-scholarships" element={<FeeScholarships />} />
+    <Router>
+        <Routes>
+            {/* ===== Public Routes ===== */}
+            <Route path="/" element={<Home />} />
+            <Route path="/about" element={<About />} />
+            <Route path="/academics" element={<Academics />} />
+            <Route path="/admission" element={<Admission />} />
+            <Route path="/contact" element={<Contact />} />
+            <Route path="/notices" element={<Notices />} />
+            <Route path="/results-placement" element={<ResultPlacement />} />
+            <Route path="/fee-scholarships" element={<FeeScholarships />} />
 
-      {/* ===== Admin Auth Routes ===== */}
-      <Route path="/admin/login" element={<AdminLogin />} />
-      <Route path="/admin/register" element={<Register />} />
-      <Route path="/admin/forgot-password" element={<ForgotPasswordPage />} />
+            {/* ===== Admin Auth Routes ===== */}
+            <Route path="/admin/login" element={<AdminLogin />} />
+            <Route path="/admin/register" element={<Register />} />
+            <Route path="/admin/forgot-password" element={<ForgotPasswordPage />} />
 
-      {/* ===== Protected Admin Routes ===== */}
-      <Route
-        path="/admin/dashboard"
-        element={
-          <PrivateRoute>
-            <AdminLayout>
-              <AdminDashboard />
-            </AdminLayout>
-          </PrivateRoute>
-        }
-      />
+            {/* ===== Protected Admin Routes ===== */}
+            <Route
+                path="/admin/dashboard"
+                element={
+                    <PrivateRoute>
+                        <AdminLayout>
+                            <AdminDashboard />
+                        </AdminLayout>
+                    </PrivateRoute>
+                }
+            />
 
-      {/* ================= ABOUT PAGE ADDED HERE ================= */}
-      <Route
-        path="/admin/about"
-        element={
-          <PrivateRoute>
-            <AdminLayout>
-              <AdminAbout />
-            </AdminLayout>
-          </PrivateRoute>
-        }
-      />
-      {/* ========================================================== */}
+            {/* ================= ABOUT PAGE ADDED HERE ================= */}
+            <Route
+                path="/admin/about"
+                element={
+                    <PrivateRoute>
+                        <AdminLayout>
+                            <AdminAbout />
+                        </AdminLayout>
+                    </PrivateRoute>
+                }
+            />
+            {/* ========================================================== */}
 
-      <Route
-        path="/admin/settings/logo-upload"
-        element={
-          <PrivateRoute>
-            <AdminLayout>
-              <LogoUpload />
-            </AdminLayout>
-          </PrivateRoute>
-        }
-      />
+            <Route
+                path="/admin/settings/logo-upload"
+                element={
+                    <PrivateRoute>
+                        <AdminLayout>
+                            <LogoUpload />
+                        </AdminLayout>
+                    </PrivateRoute>
+                }
+            />
 
-      <Route
-        path="/admin/contact"
-        element={
-          <PrivateRoute>
-            <AdminLayout>
-              <AdminContact />
-            </AdminLayout>
-          </PrivateRoute>
-        }
-      />
+            <Route
+                path="/admin/contact"
+                element={
+                    <PrivateRoute>
+                        <AdminLayout>
+                            <AdminContact />
+                        </AdminLayout>
+                    </PrivateRoute>
+                }
+            />
 
-      <Route
-        path="/admin/notices"
-        element={
-          <PrivateRoute>
-            <AdminLayout>
-              <AdminNotice />
-            </AdminLayout>
-          </PrivateRoute>
-        }
-      />
+            <Route
+                path="/admin/notices"
+                element={
+                    <PrivateRoute>
+                        <AdminLayout>
+                            <AdminNotice />
+                        </AdminLayout>
+                    </PrivateRoute>
+                }
+            />
 
-      {/* Admin Result & Placement */}
-      <Route
-        path="/admin/result"
-        element={
-          <PrivateRoute>
-            <AdminLayout>
-              <AdminResult />
-            </AdminLayout>
-          </PrivateRoute>
-        }
-      />
+            {/* Admin Result & Placement */}
+            <Route
+                path="/admin/result"
+                element={
+                    <PrivateRoute>
+                        <AdminLayout>
+                            <AdminResult />
+                        </AdminLayout>
+                    </PrivateRoute>
+                }
+            />
 
-      <Route
-        path="/admin/placement"
-        element={
-          <PrivateRoute>
-            <AdminLayout>
-              <AdminPlacement />
-            </AdminLayout>
-          </PrivateRoute>
-        }
-      />
+            <Route
+                path="/admin/placement"
+                element={
+                    <PrivateRoute>
+                        <AdminLayout>
+                            <AdminPlacement />
+                        </AdminLayout>
+                    </PrivateRoute>
+                }
+            />
+            {/* ===== Admin Admission Registration Handle ===== */}
+            <Route
+                path="/admin/admission/registration"
+                element={
+                    <PrivateRoute>
+                        <AdminLayout>
+                            <AdmissionAdmin />
+                        </AdminLayout>
+                    </PrivateRoute>
+                }
+            />
 
-      {/* ===== Catch-All Route ===== */}
-      <Route path="*" element={<Navigate to="/" replace />} />
-    </Routes>
-  </Router>
+            {/* ===== Catch-All Route ===== */}
+            <Route path="*" element={<Navigate to="/" replace />} />
+        </Routes>
+    </Router>
 );
 
 export default AppRouter;

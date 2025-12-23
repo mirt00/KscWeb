@@ -11,6 +11,7 @@ import noticeRoutes from "./routes/noticeRoutes.js";
 import resultRoutes from "./routes/resultRoutes.js";
 import placementRoutes from "./routes/placementRoutes.js";
 import aboutRoutes from "./routes/aboutRoutes.js";
+import admissionRoutes from "./routes/admissionRoutes.js"
 
 dotenv.config();
 connectDB();
@@ -38,6 +39,9 @@ app.use((req, res, next) => {
 // Admin routes
 app.use("/api/admin", adminRoutes);
 app.use("/api/admin/contact", contactRoutes);
+
+//student admission
+app.use("/api/admission", admissionRoutes)
 
 // About page routes
 app.use("/api/about", aboutRoutes);
