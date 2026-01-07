@@ -3,6 +3,7 @@ import axios from "axios";
 import { AnimatePresence } from "framer-motion";
 import StudentCard from "../../components/common/StudentCard";
 import { Loader2, Sparkles, Globe2, Award, GraduationCap } from "lucide-react";
+import { motion } from "framer-motion";
 
 const Placement = () => {
   const [students, setStudents] = useState([]);

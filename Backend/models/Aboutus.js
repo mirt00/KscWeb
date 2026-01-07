@@ -2,49 +2,39 @@ import mongoose from "mongoose";
 
 const AboutSchema = new mongoose.Schema(
   {
-    bannerImage: {
-      type: String, 
-    },
+    bannerImage: String,
 
     chairmanMessage: {
-      name: { type: String, required: true },
+      name: String,
       designation: { type: String, default: "Chairman" },
-      message: { type: String, required: true },
-      photo: { type: String }, 
+      message: String,
+      photo: String,
     },
 
     campusChiefMessage: {
-      name: { type: String, required: true },
+      name: String,
       designation: { type: String, default: "Campus Chief" },
-      message: { type: String, required: true },
-      photo: { type: String },
+      message: String,
+      photo: String,
     },
 
-
-    mission: {
-      type: String,
-    },
-    vision: {
-      type: String,
-    },
-    history: {
-      type: String,
-    },
+    mission: String,
+    vision: String,
+    history: String,
 
     whyChooseUs: [
       {
-        title: { type: String, required: true },
-        icon: { type: String }, 
-        description: { type: String, required: true },
+        title: String,
+        icon: String,
+        description: String,
       },
     ],
 
-
     extraSections: [
       {
-        sectionTitle: { type: String },
-        content: { type: String },
-        image: { type: String },
+        sectionTitle: String,
+        content: String,
+        image: String,
       },
     ],
   },

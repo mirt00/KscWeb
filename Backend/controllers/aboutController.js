@@ -1,19 +1,41 @@
 import About from "../models/Aboutus.js";
 
-// ---------------------------------------------------------
-// Create About Page (only once)
-// ---------------------------------------------------------
+/* =========================================================
+   CREATE ABOUT PAGE (ONLY ONCE)
+========================================================= */
 export const createAbout = async (req, res) => {
   try {
-    const existing = await About.findOne();
-    if (existing) {
+    const exists = await About.findOne();
+    if (exists) {
       return res.status(400).json({
         success: false,
         message: "About page already exists. Please update it instead.",
       });
     }
 
-    const about = await About.create(req.body);
+    const files = req.files || {};
+
+    const about = await About.create({
+      bannerImage: files.bannerImage?.[0]?.path,
+
+      chairmanMessage: {
+        name: req.body.chairmanName,
+        designation: req.body.chairmanDesignation,
+        message: req.body.chairmanMessage,
+        photo: files.chairmanPhoto?.[0]?.path,
+      },
+
+      campusChiefMessage: {
+        name: req.body.campusChiefName,
+        designation: req.body.campusChiefDesignation,
+        message: req.body.campusChiefMessage,
+        photo: files.campusChiefPhoto?.[0]?.path,
+      },
+
+      mission: req.body.mission,
+      vision: req.body.vision,
+      history: req.body.history,
+    });
 
     res.status(201).json({
       success: true,
@@ -29,9 +51,68 @@ export const createAbout = async (req, res) => {
   }
 };
 
-// ---------------------------------------------------------
-// Get About Page
-// ---------------------------------------------------------
+/* =========================================================
+   UPDATE ABOUT PAGE (SINGLETON)
+========================================================= */
+export const updateAbout = async (req, res) => {
+  try {
+    const about = await About.findOne();
+    if (!about) {
+      return res.status(404).json({
+        success: false,
+        message: "About page not found",
+      });
+    }
+
+    const files = req.files || {};
+
+    const updated = await About.findByIdAndUpdate(
+      about._id,
+      {
+        ...(files.bannerImage && {
+          bannerImage: files.bannerImage[0].path,
+        }),
+
+        chairmanMessage: {
+          ...about.chairmanMessage,
+          name: req.body.chairmanName ?? about.chairmanMessage?.name,
+          designation: req.body.chairmanDesignation ?? about.chairmanMessage?.designation,
+          message: req.body.chairmanMessage ?? about.chairmanMessage?.message,
+          photo: files.chairmanPhoto?.[0]?.path || about.chairmanMessage?.photo,
+        },
+
+        campusChiefMessage: {
+          ...about.campusChiefMessage,
+          name: req.body.campusChiefName ?? about.campusChiefMessage?.name,
+          designation: req.body.campusChiefDesignation ?? about.campusChiefMessage?.designation,
+          message: req.body.campusChiefMessage ?? about.campusChiefMessage?.message,
+          photo: files.campusChiefPhoto?.[0]?.path || about.campusChiefMessage?.photo,
+        },
+
+        mission: req.body.mission ?? about.mission,
+        vision: req.body.vision ?? about.vision,
+        history: req.body.history ?? about.history,
+      },
+      { new: true }
+    );
+
+    res.status(200).json({
+      success: true,
+      message: "About page updated successfully",
+      data: updated,
+    });
+  } catch (error) {
+    res.status(500).json({
+      success: false,
+      message: "Failed to update About page",
+      error: error.message,
+    });
+  }
+};
+
+/* =========================================================
+   GET ABOUT PAGE
+========================================================= */
 export const getAbout = async (req, res) => {
   try {
     const about = await About.findOne();
@@ -49,110 +130,5 @@ export const getAbout = async (req, res) => {
       message: "Failed to fetch About page",
       error: error.message,
     });
-  }
-};
-
-// ---------------------------------------------------------
-// Update About Page (full update)
-// ---------------------------------------------------------
-export const updateAbout = async (req, res) => {
-  try {
-    const about = await About.findOne();
-    if (!about) {
-      return res.status(404).json({
-        success: false,
-        message: "About page does not exist",
-      });
-    }
-
-    const updated = await About.findByIdAndUpdate(about._id, req.body, {
-      new: true,
-      runValidators: true,
-    });
-
-    res.status(200).json({
-      success: true,
-      message: "About page updated successfully",
-      data: updated,
-    });
-  } catch (error) {
-    res.status(500).json({
-      success: false,
-      message: "Failed to update About page",
-      error: error.message,
-    });
-  }
-};
-
-// ---------------------------------------------------------
-// Add a Why-Choose-Us Item
-// ---------------------------------------------------------
-export const addWhyChooseUs = async (req, res) => {
-  try {
-    const { title, icon, description } = req.body;
-
-    const about = await About.findOne();
-    if (!about) return res.status(404).json({ success: false, message: "About page not found" });
-
-    about.whyChooseUs.push({ title, icon, description });
-    await about.save();
-
-    res.status(200).json({ success: true, message: "Why Choose Us item added", data: about });
-  } catch (error) {
-    res.status(500).json({ success: false, message: "Failed to add Why Choose Us item", error: error.message });
-  }
-};
-
-// ---------------------------------------------------------
-// Remove a Why-Choose-Us Item
-// ---------------------------------------------------------
-export const removeWhyChooseUs = async (req, res) => {
-  try {
-    const { id } = req.params;
-    const about = await About.findOne();
-    if (!about) return res.status(404).json({ success: false, message: "About page not found" });
-
-    about.whyChooseUs = about.whyChooseUs.filter((item) => item._id.toString() !== id);
-    await about.save();
-
-    res.status(200).json({ success: true, message: "Why Choose Us item removed", data: about });
-  } catch (error) {
-    res.status(500).json({ success: false, message: "Failed to remove Why Choose Us item", error: error.message });
-  }
-};
-
-// ---------------------------------------------------------
-// Add an Extra Section
-// ---------------------------------------------------------
-export const addExtraSection = async (req, res) => {
-  try {
-    const { sectionTitle, content, image } = req.body;
-    const about = await About.findOne();
-    if (!about) return res.status(404).json({ success: false, message: "About page not found" });
-
-    about.extraSections.push({ sectionTitle, content, image });
-    await about.save();
-
-    res.status(200).json({ success: true, message: "Extra section added", data: about });
-  } catch (error) {
-    res.status(500).json({ success: false, message: "Failed to add extra section", error: error.message });
-  }
-};
-
-// ---------------------------------------------------------
-// Remove an Extra Section
-// ---------------------------------------------------------
-export const removeExtraSection = async (req, res) => {
-  try {
-    const { id } = req.params;
-    const about = await About.findOne();
-    if (!about) return res.status(404).json({ success: false, message: "About page not found" });
-
-    about.extraSections = about.extraSections.filter((section) => section._id.toString() !== id);
-    await about.save();
-
-    res.status(200).json({ success: true, message: "Extra section removed", data: about });
-  } catch (error) {
-    res.status(500).json({ success: false, message: "Failed to remove extra section", error: error.message });
   }
 };

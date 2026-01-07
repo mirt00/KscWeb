@@ -1,23 +1,32 @@
 import express from "express";
+import upload from "../middlewares/multer.js"
 import {
   createAbout,
-  getAbout,
   updateAbout,
-  addWhyChooseUs,
-  removeWhyChooseUs,
-  addExtraSection,
-  removeExtraSection,
+  getAbout,
 } from "../controllers/aboutController.js";
 
 const router = express.Router();
 
 router.get("/", getAbout);
 
-router.post("/", createAbout);
-router.put("/:id", updateAbout);
-router.post("/why-choose-us", addWhyChooseUs);
-router.delete("/why-choose-us/:id", removeWhyChooseUs);
-router.post("/extra-section", addExtraSection);
-router.delete("/extra-section/:id", removeExtraSection);
+router.post(
+  "/",
+  upload.fields([
+    { name: "bannerImage", maxCount: 1 },
+    { name: "chairmanPhoto", maxCount: 1 },
+    { name: "campusChiefPhoto", maxCount: 1 },
+  ]),
+  createAbout
+);
 
+router.put(
+  "/",
+  upload.fields([
+    { name: "bannerImage", maxCount: 1 },
+    { name: "chairmanPhoto", maxCount: 1 },
+    { name: "campusChiefPhoto", maxCount: 1 },
+  ]),
+  updateAbout
+);
 export default router;

@@ -126,13 +126,15 @@ const Contact = () => {
             {/* Right: Map - Updated Border Color */}
             <div className="lg:col-span-7">
               <div className="h-full min-h-[500px] rounded-3xl overflow-hidden shadow-2xl border-8 border-[#FDF4F9] relative group">
-                <iframe
-                  title="Campus Location"
-                  src="https://www.google.com/maps/embed?pb=!1m18!1m12!1m3!1d3532.744158931346!2d85.3400!3d27.7000!2m3!1f0!2f0!3f0!3m2!1i1024!2i768!4f13.1!3m3!1m2!1s0x0%3A0x0!2zMjfCsDQyJzAwLjAiTiA4NcKwMjAnMjQuMCJF!5e0!3m2!1sen!2snp!4v1620000000000!5m2!1sen!2snp"
-                  className="w-full h-full grayscale-[50%] contrast-[1.1] group-hover:grayscale-0 transition-all duration-700"
-                  allowFullScreen
-                  loading="lazy"
-                ></iframe>
+               <iframe
+  title="Campus Location"
+  src="https://www.google.com/maps/embed?pb=!1m18!1m12!1m3!1d3533.157910916168!2d85.2564941!3d27.6823996!2m3!1f0!2f0!3f0!3m2!1i1024!2i768!4f13.1!3m3!1m2!1s0x39eb2310c74d489f%3A0xee6ce7ebe3de9a8a!2sKathmandu%20Shiksha%20Campus!5e0!3m2!1sen!2snp!4v1700000000000"
+  className="w-full h-full grayscale-[50%] contrast-[1.1] group-hover:grayscale-0 transition-all duration-700"
+  allowFullScreen
+  loading="lazy"
+  referrerPolicy="no-referrer-when-downgrade"
+></iframe>
+
                 {/* Decorative overlay - Brand Themed */}
                 <div className="absolute bottom-6 left-6 bg-white/90 backdrop-blur-md px-5 py-3 rounded-2xl shadow-lg border border-[#C8A45D]/20 pointer-events-none">
                     <p className="text-[#3F1536] font-black uppercase text-[10px] tracking-widest">Live Navigation</p>

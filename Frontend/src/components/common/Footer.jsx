@@ -80,10 +80,10 @@ const Footer = () => {
             <div className="space-y-6">
               <div className="flex gap-5">
                 <FaMapMarkerAlt className="text-[#C8A45D] shrink-0 mt-1" size={20} />
-                <span className="text-white text-md font-bold leading-snug">Bafal, Kathmandu,<br />Bagmati, Nepal</span>
+                <span className="text-white text-md font-bold leading-snug">Satugal-10,Chandragiri,<br /> Nepal</span>
               </div>
               <div className="flex gap-5 items-center">
-                <FaPhoneAlt className="text-[#C8A45D] shrink-0" size={20} />
+                <FaPhoneAlt className="text-[#C8A45D] shrink-0" size={10} />
                 <span className="text-white text-md font-bold">+977-1-4XXXXXX</span>
               </div>
               <div className="flex gap-5 items-center">
